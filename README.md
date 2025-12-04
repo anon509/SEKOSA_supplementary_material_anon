@@ -1,6 +1,6 @@
 # SEKOSA: System Engineering Knowledge for Online Self-Assessment
 
-## Anonymous Reproduction Package for ESWC 2026 Paper
+## Anonymous Reproduction Package for Review
 
 This repository contains the complete implementation and demonstration materials for the SEKOSA approach presented in:
 
