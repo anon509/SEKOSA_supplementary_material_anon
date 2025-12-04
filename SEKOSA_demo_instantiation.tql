@@ -1,0 +1,403 @@
+insert
+#components
+
+#real conditions
+
+$outside_light1 isa LightIntensity,
+    has average_lumen 70,
+    has description "LightIntensity";
+
+
+$outside_noise1 isa AmbientNoise,
+    has average_decibel 85,
+    has description "AmbientNoise";
+
+$roomsize isa RoomSize,
+    has diagonal 4;
+
+$victimposeauc 4 isa average_error_distance_acoustic; #kamer diagonaal.
+$victimposefast 3 isa average_error_distance_fast; # 3/4 van kamer diagonaal
+$victimposethorough 3.25 isa average_error_distance_thorough; # waypoint dist + errordist robot pose
+
+
+$minimal_allowed_quality_change_correct_detection 0.2 isa minimal_allowed_change_correct_detection;
+$minimal_allowed_quality_error_distance 0.2 isa minimal_allowed_error_distance;
+
+$robotpose1 isa RobotPose,
+    has average_error_distance_robot 0.25,
+    has description "Estimated robot pose";
+
+$wp isa WayPointDistance,
+    has distance 3;
+
+#####################
+# cam + det + track #
+#####################
+
+#######
+# cam #
+#######
+
+## RGB CAMERA 1 WITH PROPERTIES AS COMPONENT OF ACTOR
+$rgb-cam isa Camera, has health_state true;
+
+### >500  lumen
+$min_l0 501 isa min_lumen;
+$max_l0 5000 isa max_lumen;
+## RGB CAMERA INPUTS AND OUTPUTS
+$rgb-light0 isa LightIntensity,
+    has description "LightIntensity";
+$rgb-image0 isa RGBImage,
+    has average_contrast 0.85,
+    has description "RGBImage";
+
+
+#featuring
+(featuring: subject: $rgb-light0, feature: $min_l0, feature: $max_l0) isa featuring;
+
+#requirement
+(environmental_requirement: state: (featuring: subject: $rgb-light0, feature: $min_l0, feature: $max_l0), 
+    outcome: $rgb-image0,
+    petitioner: $rgb-cam) isa environmental_requirement;
+
+
+### 100-500 lumen
+$min_l1 101 isa min_lumen;
+$max_l1 500 isa max_lumen;
+## RGB CAMERA INPUTS AND OUTPUTS
+$rgb-light1 isa LightIntensity,
+    has description "LightIntensity";
+$rgb-image1 isa RGBImage,
+    has average_contrast 0.7,
+    has description "RGBImage";
+
+
+#featuring
+(featuring: subject: $rgb-light1, feature: $min_l1, feature: $max_l1) isa featuring;
+
+#requirement
+(environmental_requirement: state: (featuring: subject: $rgb-light1, feature: $min_l1, feature: $max_l1), 
+    outcome: $rgb-image1,
+    petitioner: $rgb-cam) isa environmental_requirement;
+
+### 50-100 lumen
+$min_l2 51 isa min_lumen;
+$max_l2 100 isa max_lumen;
+## RGB CAMERA INPUTS AND OUTPUTS
+$rgb-light2 isa LightIntensity,
+    has description "LightIntensity";
+$rgb-image2 isa RGBImage,
+    has average_contrast 0.5,
+    has description "RGBImage";
+
+#featuring
+(featuring: subject: $rgb-light2, feature: $min_l2, feature: $max_l2) isa featuring;
+
+#requirement
+(environmental_requirement: state: (featuring: subject: $rgb-light2, feature: $min_l2, feature: $max_l2), 
+    outcome: $rgb-image2,
+    petitioner: $rgb-cam) isa environmental_requirement;
+
+### 10-50 lumen
+$min_l3 10 isa min_lumen;
+$max_l3 50 isa max_lumen;
+## RGB CAMERA INPUTS AND OUTPUTS
+$rgb-light3 isa LightIntensity,
+    has description "LightIntensity";
+$rgb-image3 isa RGBImage,
+    has average_contrast 0.3,
+    has description "RGBImage";
+
+#featuring
+(featuring: subject: $rgb-light3, feature: $min_l3, feature: $max_l3) isa featuring;
+
+#requirement
+(environmental_requirement: state: (featuring: subject: $rgb-light3, feature: $min_l3, feature: $max_l3), 
+    outcome: $rgb-image3,
+    petitioner: $rgb-cam) isa environmental_requirement;
+
+#######
+# det #
+#######
+
+## detector 1 WITH PROPERTIES AS COMPONENT OF ACTOR
+$detector isa Detector, has health_state true;
+
+### >0.8 contrast
+$min_c0 0.81 isa min_contrast;
+$max_c0 0.99 isa max_contrast;
+## detector INPUTS AND OUTPUTS
+$input-image0 isa RGBImage,
+    has description "RGBImage";
+$det0 isa Detection,
+    has average_change_correct_detection 0.80,
+    has description "Detection";
+
+    
+
+#featuring
+(featuring: subject: $input-image0, feature: $min_c0, feature: $max_c0) isa featuring;
+
+#requirement
+(functional_requirement: input: (featuring: subject: $input-image0, feature: $min_c0, feature: $max_c0), 
+    output: $det0,
+    petitioner: $detector) isa functional_requirement;
+
+### 0.6-0.8 contrast
+$min_c1 0.61 isa min_contrast;
+$max_c1 0.8 isa max_contrast;
+## detector INPUTS AND OUTPUTS
+$input-image1 isa RGBImage,
+    has description "RGBImage";
+$det1 isa Detection,
+    has average_change_correct_detection 0.70,
+    has description "Detection";
+
+    
+
+#featuring
+(featuring: subject: $input-image1, feature: $min_c1, feature: $max_c1) isa featuring;
+
+#requirement
+(functional_requirement: input: (featuring: subject: $input-image1, feature: $min_c1, feature: $max_c1), 
+    output: $det1,
+    petitioner: $detector) isa functional_requirement;
+
+### 0.4-0.6 contrast
+$min_c2 0.41 isa min_contrast;
+$max_c2 0.6 isa max_contrast;
+## detector INPUTS AND OUTPUTS
+$input-image2 isa RGBImage,
+    has description "RGBImage";
+$det2 isa Detection,
+    has average_change_correct_detection 0.5,
+    has description "Detection";
+
+#featuring
+(featuring: subject: $input-image2, feature: $min_c2, feature: $max_c2) isa featuring;
+
+#requirement
+(functional_requirement: input: (featuring: subject: $input-image2, feature: $min_c2, feature: $max_c2), 
+    output: $det2,
+    petitioner: $detector) isa functional_requirement;
+
+
+### 0.1-0.4 contrast
+$min_c3 0.1 isa min_contrast;
+$max_c3 0.4 isa max_contrast;
+## detector INPUTS AND OUTPUTS
+$input-image3 isa RGBImage,
+    has description "RGBImage";
+$det3 isa Detection,
+    has average_change_correct_detection 0.3,
+    has description "Detection";
+
+#featuring
+(featuring: subject: $input-image3, feature: $min_c3, feature: $max_c3) isa featuring;
+
+#requirement
+(functional_requirement: input: (featuring: subject: $input-image3, feature: $min_c3, feature: $max_c3), 
+    output: $det3,
+    petitioner: $detector) isa functional_requirement;
+
+
+# #########
+# # track #
+# #########
+
+$objectTracking isa ObjectTracking, has health_state true;
+
+### everything above 0.5 accept for detection correctness + robot pose
+$min_dt1 0.41 isa min_change_correct_detection;
+$max_dt1 0.99 isa max_change_correct_detection;
+
+$min_rp1 0.24 isa min_error_distance_robot;
+$max_rp1 0.27 isa max_error_distance_robot;
+
+## detector INPUTS AND OUTPUTS
+$input-det-track isa Detection,
+    has description "Detection";
+$input-robotpose isa RobotPose,
+    has description "Estimated robot pose";
+
+#featuring
+(featuring: subject: $input-det-track, feature: $min_dt1, feature: $max_dt1) isa featuring;
+(featuring: subject: $input-robotpose, feature: $min_rp1, feature: $max_rp1) isa featuring;
+
+$vicpose isa VictimPose,
+    has average_error_distance_fast $victimposefast,
+    # has average_error_distance_fast 0.3,
+    has description "Estimated victim location fast search";
+
+#requirement
+(functional_requirement: input: (featuring: subject: $input-det-track, feature: $min_dt1, feature: $max_dt1),
+    input: (featuring: subject: $input-robotpose, feature: $min_rp1, feature: $max_rp1),
+    output: $vicpose,
+    petitioner: $objectTracking) isa functional_requirement;
+
+
+
+$vicpose2 isa VictimPose,
+    has average_error_distance_thorough $victimposethorough,
+    # has average_error_distance_thorough 0.4,
+    has description "Estimated victim location thorough search";
+
+(functional_requirement: input: (featuring: subject: $input-det-track, feature: $min_dt1, feature: $max_dt1),
+    input: (featuring: subject: $input-robotpose, feature: $min_rp1, feature: $max_rp1),
+    output: $vicpose2,
+    petitioner: $objectTracking) isa functional_requirement;
+
+
+##############
+# mic + taal #
+##############
+
+##  SpeechToText 1 WITH PROPERTIES AS COMPONENT OF ACTOR
+$SpeechToText isa SpeechToText, has health_state true;
+
+### 00-80 noise
+$min_n1 10 isa min_decibel;
+$max_n1 80 isa max_decibel;
+##  SpeechToText INPUTS AND OUTPUTS
+$env-noise1 isa AmbientNoise,
+    has description "AmbientNoise";
+$tts1 isa TextToSpeech,
+    has average_signal_to_noise 0.6,
+    has description "TextToSpeech";
+
+    
+
+#featuring
+(featuring: subject: $env-noise1, feature: $min_n1, feature: $max_n1) isa featuring;
+
+#requirement
+(environmental_requirement: state: (featuring: subject: $env-noise1, feature: $min_n1, feature: $max_n1), 
+    outcome: $tts1,
+    petitioner: $SpeechToText) isa environmental_requirement;
+
+### 80-90 noise
+$min_n2 81 isa min_decibel;
+$max_n2 90 isa max_decibel;
+##  SpeechToText INPUTS AND OUTPUTS
+$env-noise2 isa AmbientNoise,
+    has description "AmbientNoise";
+$tts2 isa TextToSpeech,
+    has average_signal_to_noise 0.5,
+    has description "TextToSpeech";
+
+#featuring
+(featuring: subject: $env-noise2, feature: $min_n2, feature: $max_n2) isa featuring;
+
+#requirement
+(environmental_requirement: state: (featuring: subject: $env-noise2, feature: $min_n2, feature: $max_n2), 
+    outcome: $tts2,
+    petitioner: $SpeechToText) isa environmental_requirement;
+
+
+### 90-100 noise
+$min_n3 91 isa min_decibel;
+$max_n3 100 isa max_decibel;
+##  SpeechToText INPUTS AND OUTPUTS
+$env-noise3 isa AmbientNoise,
+    has description "AmbientNoise";
+$tts3 isa TextToSpeech,
+    has average_signal_to_noise 0.3,
+    has description "TextToSpeech";
+
+#featuring
+(featuring: subject: $env-noise3, feature: $min_n3, feature: $max_n3) isa featuring;
+
+#requirement
+(environmental_requirement: state: (featuring: subject: $env-noise3, feature: $min_n3, feature: $max_n3), 
+    outcome: $tts3,
+    petitioner: $SpeechToText) isa environmental_requirement;
+
+
+#######
+# NLP #
+#######
+##  language-recognition 1 WITH PROPERTIES AS COMPONENT OF ACTOR
+$language-recognition isa NLP, has health_state true;
+
+### 60% correct
+$min_t1 0.561 isa min_signal_to_noise;
+$max_t1 1 isa max_signal_to_noise;
+##  SpeechToText INPUTS AND OUTPUTS
+##  language-recognition INPUTS AND OUTPUTS
+$tts4 isa TextToSpeech,
+    has description "TextToSpeech";
+$det-speech1 isa Detection,
+    has average_change_correct_detection 0.70,
+    has description "Detection";
+$vicpose3 isa VictimPose,
+    has average_error_distance_acoustic $victimposeauc,
+    # has average_error_distance_acoustic 0.3,
+    has description "Estimated victim location auditive search";
+
+
+#featuring
+(featuring: subject: $tts4, feature: $min_t1, feature: $max_t1) isa featuring;
+
+#requirement
+(functional_requirement: input: (featuring: subject: $tts4, feature: $min_t1, feature: $max_t1), 
+    output: $det-speech1,
+    output: $vicpose3,
+    petitioner: $language-recognition) isa functional_requirement;
+
+### 50% correct 
+$min_t2 0.31 isa min_signal_to_noise;
+$max_t2 0.5 isa max_signal_to_noise;
+##  language-recognition INPUTS AND OUTPUTS
+$tts5 isa TextToSpeech,
+    has description "TextToSpeech";
+$det-speech2 isa Detection,
+    has average_change_correct_detection 0.65,
+    has description "Detection";
+
+#featuring
+(featuring: subject: $tts5, feature: $min_t2, feature: $max_t2) isa featuring;
+
+#requirement
+(functional_requirement: input: (featuring: subject: $tts5, feature: $min_t2, feature: $max_t2), 
+    output: $det-speech2,
+    output: $vicpose3,
+    petitioner: $language-recognition) isa functional_requirement;
+
+
+### 30% correct
+$min_t3 0.1 isa min_signal_to_noise;
+$max_t3 0.3 isa max_signal_to_noise;
+##  language-recognition INPUTS AND OUTPUTS
+$tts6 isa TextToSpeech,
+    has description "TextToSpeech";
+$det-speech3 isa Detection,
+    has average_change_correct_detection 0.4,
+    has description "Detection";
+
+#featuring
+(featuring: subject: $tts6, feature: $min_t3, feature: $max_t3) isa featuring;
+
+#requirement
+(functional_requirement: input: (featuring: subject: $tts6, feature: $min_t3, feature: $max_t3), 
+    output: $det-speech3,
+    output: $vicpose3,
+    petitioner: $language-recognition) isa functional_requirement;
+
+
+
+
+###############
+## behaviour ##
+###############
+
+# $und_s isa Behaviour,
+#     has name "Undefined Search";
+
+$vis_f_s isa Behaviour,
+    has name "Visual Fast Search";
+
+$ac_s isa Behaviour,
+    has name "Acoustic Search";
+
+$vis_t_s isa Behaviour,
+    has name "Visual Thorough Search";
