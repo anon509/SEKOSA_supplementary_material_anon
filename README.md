@@ -2,9 +2,7 @@
 
 ## Anonymous Reproduction Package for Review
 
-This repository contains the complete implementation and demonstration materials for the SEKOSA approach presented in:
-
-> **"A System Engineering Knowledge Ontology for Self-Assessment in a Robot"**  
+This repository contains the complete implementation and demonstration materials for our paper presenting the SEKOSA approach.
 
 ---
 
