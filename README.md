@@ -34,5 +34,5 @@ This package provides everything needed to reproduce the demonstration from the 
 2. Create a TypeDB database with the ontology as schema and the instantiations as data.
 3. Run the python script to repoduce our results.
 
-Commandline reproduction comming soon...
+Single command reproduction comming soon...
 
