@@ -1,8 +1,3 @@
-#############################################################################
-#                                                                           #
-#     	Software Engineering Knowledge Ontology for Self-Assessment 	    #
-#                                                                           # 
-#############################################################################
 define
 
 ################
@@ -64,6 +59,8 @@ quality sub attribute, abstract, value double;
         min_decibel sub minimal_quality,
             plays featuring:feature;
         min_contrast sub minimal_quality,
+            plays featuring:feature;
+        min_change_correct_detection sub minimal_quality,
             plays featuring:feature;
         min_change_correct_detection sub minimal_quality,
             plays featuring:feature;
@@ -312,12 +309,12 @@ rule realizing_external:
         $d1 = $d2;
         $rq_min_attr isa minimal_quality;
         $rq_max_attr isa maximal_quality;
-        (featuring: subject: $rq_input, feature: $rq_min_attr) isa featuring;
-        (featuring: subject: $rq_input, feature: $rq_max_attr) isa featuring;
+        (subject: $rq_input, feature: $rq_min_attr) isa featuring;
+        (subject: $rq_input, feature: $rq_max_attr) isa featuring;
         $att <= $rq_max_attr;
         $att >= $rq_min_attr;
     } then {
-        (realizing: provider: $input, requester: $rq_input) isa realizing;
+        (provider: $input, requester: $rq_input) isa realizing;
     };
 
 
@@ -328,12 +325,12 @@ rule realizing_rule:
         $d1 = $d2;
         $rq_min_attr isa minimal_quality;
         $rq_max_attr isa maximal_quality;
-        (featuring: subject: $rq_input, feature: $rq_min_attr) isa featuring;
-        (featuring: subject: $rq_input, feature: $rq_max_attr) isa featuring;
+        (subject: $rq_input, feature: $rq_min_attr) isa featuring;
+        (subject: $rq_input, feature: $rq_max_attr) isa featuring;
         $att <= $rq_max_attr;
         $att >= $rq_min_attr;
     } then {
-        (realizing: provider: $input, requester: $rq_input) isa realizing;
+        (provider: $input, requester: $rq_input) isa realizing;
     };
 
 
@@ -342,13 +339,13 @@ rule processing_external:
     when {
         $data_rel isa PhysicalConcept;
         $data_req isa PhysicalConcept;
-        $feature_req (featuring: subject: $data_req) isa featuring;
+        $feature_req (subject: $data_req) isa featuring;
         $data_out isa Creation;
         $comp isa Component;
-        $rq (requirement: call: $feature_req, petitioner: $comp, product: $data_out) isa requirement;
-        $real (realizing: provider: $data_rel, requester: $data_req) isa realizing;
+        $rq (call: $feature_req, petitioner: $comp, product: $data_out) isa requirement;
+        $real (provider: $data_rel, requester: $data_req) isa realizing;
     } then {
-        (processing: input: $data_rel, executor: $comp, output: $data_out) isa processing;
+        (input: $data_rel, executor: $comp, output:$data_out) isa processing;
     };
 
 
@@ -356,98 +353,74 @@ rule processing_rule:
     when {
         $data_rel isa Creation;
         $data_req isa Creation;
-        $feature_req (featuring: subject: $data_req) isa featuring;
+        $feature_req (subject: $data_req) isa featuring;
         $data_out isa Creation;
         $comp isa Component;
-        $rq (requirement: call: $feature_req, petitioner: $comp, product: $data_out) isa requirement;
-        $real (realizing: provider: $data_rel, requester: $data_req) isa realizing;
-        $pro (processing: output: $data_rel) isa processing;
+        $rq (call: $feature_req, petitioner: $comp, product: $data_out) isa requirement;
+        $real (provider: $data_rel, requester: $data_req) isa realizing;
+        $pro (output: $data_rel) isa processing;
     } then {
-        (processing: input: $data_rel, executor: $comp, output: $data_out) isa processing;
+        (input: $data_rel, executor: $comp, output:$data_out) isa processing;
     };
 
 
 rule processing_is_transitive2:
     when {
-        (processing: input: $data_in, executor: $comp1, output: $data_out) isa processing;
-        (processing: input: $data_out, executor: $comp2, output: $data_out2) isa processing;
+        (input: $data_in, executor: $comp1, output:$data_out) isa processing;
+        (input: $data_out, executor: $comp2, output:$data_out2) isa processing;
     } then {
-        (processing: input: $data_in, executor: $comp1, executor: $comp2, output: $data_out2) isa processing;
+        (input: $data_in, executor: $comp1, executor: $comp2, output:$data_out2) isa processing;
     };
-
-
-# rule processing_is_transitive3:
-#     when {
-#         (processing: input: $data_in, executor: $comp1, output: $data_out) isa processing;
-#         (processing: input: $data_out, executor: $comp2, output: $data_out2) isa processing;
-#         (processing: input: $data_out2, executor: $comp3, output: $data_out3) isa processing;
-#     } then {
-#         (processing: input: $data_in, executor: $comp1, executor: $comp2, executor: $comp3, output: $data_out3) isa processing;
-#     };
-
-
-# behaviour requirements - NIET MEER AANGEPAST WANT NIET MEER NODIG; TOCH?!
-# rule search_behaviour_requirement:
-#     when {
-#         $beh isa Behaviour, has name "Undefined Search";
-#         $proc (processing: input: $inp, output: $pose) isa processing;
-#         $inp isa PhysicalConcept;
-#         $pose isa Creation, has average_quality $quality;
-#         $quality > 0.1;
-#     } then {
-#         (processing_requirement: need: $proc, petitioner: $beh, output: $pose) isa processing_requirement;
-#     };
-
 
 rule visual_fast_search_behaviour_requirement:
     when {
         $beh isa Behaviour, has name "Visual Fast Search";
-        $proc1 (processing: input: $light, executor: $cam, output: $detection) isa processing;
+        $proc1 (input:$light, executor:$cam, output:$detection) isa processing;
         $light isa LightIntensity;
         $detection isa Creation, has average_change_correct_detection $quality_change_correct_detection;
-        $proc2 (processing: input: $robpos, executor: $track, output: $vicpose) isa processing;
-        $proc3 (processing: input: $detection, executor: $track, output: $vicpose) isa processing;
+        $proc2 (input:$robpos, executor:$track, output:$vicpose) isa processing;
+        $proc3 (input:$detection, executor:$track, output:$vicpose) isa processing;
         $track isa ObjectTracking;
         $robpos isa RobotPose;
-        # $rel (realizing: provider: $detection, requester: $track) isa realizing;
+        # $rel (provider: $detection, requester: $track) isa realizing;
         $vicpose isa VictimPose, has average_error_distance_fast $quality_error_distance_fast;
         $minimal_allowed_quality_change_correct_detection isa minimal_allowed_change_correct_detection;
         $minimal_allowed_quality_error_distance isa minimal_allowed_error_distance;
         $quality_change_correct_detection > $minimal_allowed_quality_change_correct_detection;
         $quality_error_distance_fast > $minimal_allowed_quality_error_distance;
     } then {
-        (processing_requirement: need: $proc1, need: $proc2, petitioner: $beh, output: $detection, output: $vicpose) isa processing_requirement;
+        (need:$proc1, need:$proc2, petitioner:$beh, output:$detection, output:$vicpose) isa processing_requirement;
     };
 
 
 rule visual_thorough_search_behaviour_requirement:
     when {
         $beh isa Behaviour, has name "Visual Thorough Search";
-        $proc1 (processing: input: $light, executor: $cam, output: $detection) isa processing;
+        $proc1 (input:$light, executor:$cam, output:$detection) isa processing;
         $light isa LightIntensity;
         $detection isa Creation, has average_change_correct_detection $quality_change_correct_detection;
-        $proc2 (processing: input: $robpos, executor: $track, output: $vicpose) isa processing;
-        $proc3 (processing: input: $detection, executor: $track, output: $vicpose) isa processing;
+        $proc2 (input:$robpos, executor:$track, output:$vicpose) isa processing;
+        $proc3 (input:$detection, executor:$track, output:$vicpose) isa processing;
         $track isa ObjectTracking;
         $robpos isa RobotPose;
-        # $rel (realizing: provider: $detection, requester: $track) isa realizing;
+        # $rel (provider: $detection, requester: $track) isa realizing;
         $vicpose isa VictimPose, has average_error_distance_thorough $quality_error_distance_thorough;
         $minimal_allowed_quality_change_correct_detection isa minimal_allowed_change_correct_detection;
         $minimal_allowed_quality_error_distance isa minimal_allowed_error_distance;
         $quality_change_correct_detection > $minimal_allowed_quality_change_correct_detection;
         $quality_error_distance_thorough > $minimal_allowed_quality_error_distance;
     } then {
-        (processing_requirement: need: $proc1, need: $proc2, petitioner: $beh, output: $detection, output: $vicpose) isa processing_requirement;
+        (need:$proc1, need:$proc2, petitioner:$beh, output:$detection, output:$vicpose) isa processing_requirement;
     };
 
 rule acoustic_search_behaviour_requirement:
     when {
         $beh isa Behaviour, has name "Acoustic Search";
-        $proc1 (processing: input: $inp, executor: $NLP, output: $detection) isa processing;
+        $proc1 (input:$inp, executor:$NLP, output:$detection) isa processing;
         $inp isa PhysicalConcept;
         $NLP isa NLP;
         $detection isa Creation, has average_change_correct_detection $quality_change_correct_detection;
-        $proc2 (processing: input: $inp, executor: $speechtotext, executor: $NLP, output: $vicpose) isa processing;
+        $proc2 (input:$inp, executor:$speechtotext, executor:$NLP, output:$vicpose) isa processing;
         $speechtotext isa SpeechToText;
         $vicpose isa VictimPose, has average_error_distance_acoustic $quality_error_distance_acoustic;
         $minimal_allowed_quality_change_correct_detection isa minimal_allowed_change_correct_detection;
@@ -455,5 +428,5 @@ rule acoustic_search_behaviour_requirement:
         $quality_change_correct_detection > $minimal_allowed_quality_change_correct_detection;
         $quality_error_distance_acoustic > $minimal_allowed_quality_error_distance;
     } then {
-        (processing_requirement: need: $proc1, need: $proc2, petitioner: $beh, output: $detection, output: $vicpose) isa processing_requirement;
+        (need: $proc1, need:$proc2, petitioner:$beh, output:$detection, output:$vicpose) isa processing_requirement;
     };
