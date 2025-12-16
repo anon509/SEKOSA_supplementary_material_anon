@@ -53,10 +53,10 @@ $rgb-image0 isa RGBImage,
 
 
 #featuring
-(featuring: subject: $rgb-light0, feature: $min_l0, feature: $max_l0) isa featuring;
+$fi_rgbcam0 (subject: $rgb-light0, feature: $min_l0, feature: $max_l0) isa featuring;
 
 #requirement
-(environmental_requirement: state: (featuring: subject: $rgb-light0, feature: $min_l0, feature: $max_l0), 
+$rq_cam0 (state: $fi_rgbcam0, 
     outcome: $rgb-image0,
     petitioner: $rgb-cam) isa environmental_requirement;
 
@@ -73,10 +73,10 @@ $rgb-image1 isa RGBImage,
 
 
 #featuring
-(featuring: subject: $rgb-light1, feature: $min_l1, feature: $max_l1) isa featuring;
+$fi_rgbcam1 (subject: $rgb-light1, feature: $min_l1, feature: $max_l1) isa featuring;
 
 #requirement
-(environmental_requirement: state: (featuring: subject: $rgb-light1, feature: $min_l1, feature: $max_l1), 
+$rq_cam1 (state: $fi_rgbcam1, 
     outcome: $rgb-image1,
     petitioner: $rgb-cam) isa environmental_requirement;
 
@@ -91,10 +91,10 @@ $rgb-image2 isa RGBImage,
     has description "RGBImage";
 
 #featuring
-(featuring: subject: $rgb-light2, feature: $min_l2, feature: $max_l2) isa featuring;
+$fi_rgbcam2 (subject: $rgb-light2, feature: $min_l2, feature: $max_l2) isa featuring;
 
 #requirement
-(environmental_requirement: state: (featuring: subject: $rgb-light2, feature: $min_l2, feature: $max_l2), 
+$rq_cam2 (state: $fi_rgbcam2, 
     outcome: $rgb-image2,
     petitioner: $rgb-cam) isa environmental_requirement;
 
@@ -109,10 +109,10 @@ $rgb-image3 isa RGBImage,
     has description "RGBImage";
 
 #featuring
-(featuring: subject: $rgb-light3, feature: $min_l3, feature: $max_l3) isa featuring;
+$fi_rgbcam3 (subject: $rgb-light3, feature: $min_l3, feature: $max_l3) isa featuring;
 
 #requirement
-(environmental_requirement: state: (featuring: subject: $rgb-light3, feature: $min_l3, feature: $max_l3), 
+$rq_cam3 (state: $fi_rgbcam3, 
     outcome: $rgb-image3,
     petitioner: $rgb-cam) isa environmental_requirement;
 
@@ -136,10 +136,10 @@ $det0 isa Detection,
     
 
 #featuring
-(featuring: subject: $input-image0, feature: $min_c0, feature: $max_c0) isa featuring;
+$fi_rgbimg0 (subject: $input-image0, feature: $min_c0, feature: $max_c0) isa featuring;
 
 #requirement
-(functional_requirement: input: (featuring: subject: $input-image0, feature: $min_c0, feature: $max_c0), 
+$rq_det0 (input: $fi_rgbimg0, 
     output: $det0,
     petitioner: $detector) isa functional_requirement;
 
@@ -156,10 +156,10 @@ $det1 isa Detection,
     
 
 #featuring
-(featuring: subject: $input-image1, feature: $min_c1, feature: $max_c1) isa featuring;
+$fi_rgbimg1 (subject: $input-image1, feature: $min_c1, feature: $max_c1) isa featuring;
 
 #requirement
-(functional_requirement: input: (featuring: subject: $input-image1, feature: $min_c1, feature: $max_c1), 
+$rq_det1 (input: $fi_rgbimg1, 
     output: $det1,
     petitioner: $detector) isa functional_requirement;
 
@@ -174,10 +174,10 @@ $det2 isa Detection,
     has description "Detection";
 
 #featuring
-(featuring: subject: $input-image2, feature: $min_c2, feature: $max_c2) isa featuring;
+$fi_rgbimg2 (subject: $input-image2, feature: $min_c2, feature: $max_c2) isa featuring;
 
 #requirement
-(functional_requirement: input: (featuring: subject: $input-image2, feature: $min_c2, feature: $max_c2), 
+$rq_det2 (input: $fi_rgbimg2, 
     output: $det2,
     petitioner: $detector) isa functional_requirement;
 
@@ -193,10 +193,10 @@ $det3 isa Detection,
     has description "Detection";
 
 #featuring
-(featuring: subject: $input-image3, feature: $min_c3, feature: $max_c3) isa featuring;
+$fi_rgbimg3 (subject: $input-image3, feature: $min_c3, feature: $max_c3) isa featuring;
 
 #requirement
-(functional_requirement: input: (featuring: subject: $input-image3, feature: $min_c3, feature: $max_c3), 
+$rq_det3 (input: $fi_rgbimg3, 
     output: $det3,
     petitioner: $detector) isa functional_requirement;
 
@@ -204,10 +204,13 @@ $det3 isa Detection,
 # #########
 # # track #
 # #########
+##@JORIS: ik heb hier nu geen verschillende input/output mogelijkheden gemaakt omdat jij de output genereerd. 
+#ik zeg nu enkel dat we een detectie quality willen hoger dan 0.5. 
+#graag checken of dit logisch is.
 
 $objectTracking isa ObjectTracking, has health_state true;
 
-### everything above 0.5 accept for detection correctness + robot pose
+### alles boven 0.5 accept for detection correctness + robot pose
 $min_dt1 0.41 isa min_change_correct_detection;
 $max_dt1 0.99 isa max_change_correct_detection;
 
@@ -221,8 +224,8 @@ $input-robotpose isa RobotPose,
     has description "Estimated robot pose";
 
 #featuring
-(featuring: subject: $input-det-track, feature: $min_dt1, feature: $max_dt1) isa featuring;
-(featuring: subject: $input-robotpose, feature: $min_rp1, feature: $max_rp1) isa featuring;
+$fi_track1 (subject: $input-det-track, feature: $min_dt1, feature: $max_dt1) isa featuring;
+$fi_track2 (subject: $input-robotpose, feature: $min_rp1, feature: $max_rp1) isa featuring;
 
 $vicpose isa VictimPose,
     has average_error_distance_fast $victimposefast,
@@ -230,8 +233,8 @@ $vicpose isa VictimPose,
     has description "Estimated victim location fast search";
 
 #requirement
-(functional_requirement: input: (featuring: subject: $input-det-track, feature: $min_dt1, feature: $max_dt1),
-    input: (featuring: subject: $input-robotpose, feature: $min_rp1, feature: $max_rp1),
+$rq_track1 (input: $fi_track1,
+    input: $fi_track2,
     output: $vicpose,
     petitioner: $objectTracking) isa functional_requirement;
 
@@ -242,8 +245,8 @@ $vicpose2 isa VictimPose,
     # has average_error_distance_thorough 0.4,
     has description "Estimated victim location thorough search";
 
-(functional_requirement: input: (featuring: subject: $input-det-track, feature: $min_dt1, feature: $max_dt1),
-    input: (featuring: subject: $input-robotpose, feature: $min_rp1, feature: $max_rp1),
+$rq_track3 (input: $fi_track1,
+    input: $fi_track2,
     output: $vicpose2,
     petitioner: $objectTracking) isa functional_requirement;
 
@@ -268,10 +271,10 @@ $tts1 isa TextToSpeech,
     
 
 #featuring
-(featuring: subject: $env-noise1, feature: $min_n1, feature: $max_n1) isa featuring;
+$fi_noise1 (subject: $env-noise1, feature: $min_n1, feature: $max_n1) isa featuring;
 
 #requirement
-(environmental_requirement: state: (featuring: subject: $env-noise1, feature: $min_n1, feature: $max_n1), 
+$rq_SpeechToText1 (state: $fi_noise1, 
     outcome: $tts1,
     petitioner: $SpeechToText) isa environmental_requirement;
 
@@ -286,10 +289,10 @@ $tts2 isa TextToSpeech,
     has description "TextToSpeech";
 
 #featuring
-(featuring: subject: $env-noise2, feature: $min_n2, feature: $max_n2) isa featuring;
+$fi_noise2 (subject: $env-noise2, feature: $min_n2, feature: $max_n2) isa featuring;
 
 #requirement
-(environmental_requirement: state: (featuring: subject: $env-noise2, feature: $min_n2, feature: $max_n2), 
+$rq_SpeechToText2 (state: $fi_noise2, 
     outcome: $tts2,
     petitioner: $SpeechToText) isa environmental_requirement;
 
@@ -305,10 +308,10 @@ $tts3 isa TextToSpeech,
     has description "TextToSpeech";
 
 #featuring
-(featuring: subject: $env-noise3, feature: $min_n3, feature: $max_n3) isa featuring;
+$fi_noise3 (subject: $env-noise3, feature: $min_n3, feature: $max_n3) isa featuring;
 
 #requirement
-(environmental_requirement: state: (featuring: subject: $env-noise3, feature: $min_n3, feature: $max_n3), 
+$rq_SpeechToText3 (state: $fi_noise3, 
     outcome: $tts3,
     petitioner: $SpeechToText) isa environmental_requirement;
 
@@ -320,7 +323,7 @@ $tts3 isa TextToSpeech,
 $language-recognition isa NLP, has health_state true;
 
 ### 60% correct
-$min_t1 0.561 isa min_signal_to_noise;
+$min_t1 0561 isa min_signal_to_noise;
 $max_t1 1 isa max_signal_to_noise;
 ##  SpeechToText INPUTS AND OUTPUTS
 ##  language-recognition INPUTS AND OUTPUTS
@@ -336,10 +339,10 @@ $vicpose3 isa VictimPose,
 
 
 #featuring
-(featuring: subject: $tts4, feature: $min_t1, feature: $max_t1) isa featuring;
+$fi_txttosp1 (subject: $tts4, feature: $min_t1, feature: $max_t1) isa featuring;
 
 #requirement
-(functional_requirement: input: (featuring: subject: $tts4, feature: $min_t1, feature: $max_t1), 
+$rq_lan-rec1 (input: $fi_txttosp1, 
     output: $det-speech1,
     output: $vicpose3,
     petitioner: $language-recognition) isa functional_requirement;
@@ -355,10 +358,10 @@ $det-speech2 isa Detection,
     has description "Detection";
 
 #featuring
-(featuring: subject: $tts5, feature: $min_t2, feature: $max_t2) isa featuring;
+$fi_txttosp2 (subject: $tts5, feature: $min_t2, feature: $max_t2) isa featuring;
 
 #requirement
-(functional_requirement: input: (featuring: subject: $tts5, feature: $min_t2, feature: $max_t2), 
+$rq_lan-rec2 (input: $fi_txttosp2, 
     output: $det-speech2,
     output: $vicpose3,
     petitioner: $language-recognition) isa functional_requirement;
@@ -375,10 +378,10 @@ $det-speech3 isa Detection,
     has description "Detection";
 
 #featuring
-(featuring: subject: $tts6, feature: $min_t3, feature: $max_t3) isa featuring;
+$fi_txttosp3 (subject: $tts6, feature: $min_t3, feature: $max_t3) isa featuring;
 
 #requirement
-(functional_requirement: input: (featuring: subject: $tts6, feature: $min_t3, feature: $max_t3), 
+$rq_lan-rec3 (input: $fi_txttosp3, 
     output: $det-speech3,
     output: $vicpose3,
     petitioner: $language-recognition) isa functional_requirement;
