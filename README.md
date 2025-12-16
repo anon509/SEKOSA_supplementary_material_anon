@@ -26,7 +26,7 @@ This package provides everything needed to reproduce the demonstration from the 
 .
 ├── README.md                           # This file
 ├── SEKOSA_schema.tql             		# Ontology definition (TypeDB 3.0.x)
-├── SEKOSA_demo_data.tql      				# Ontology instantiation and data used for the demonstration
+├── SEKOSA_data.tql      				# Ontology instantiation and data used for the demonstration
 ├── sekosa_demonstration.py           	# Reproduces our demonstration
 ```
 
