@@ -71,7 +71,7 @@ We are using Python 3.11.14 with the packages listed below.
 - pandas >= 2.3.3
 ---
 
-## Quick Start
+## Reproducing the Demonstration
 
 ### Step 1: Start TypeDB Server
 
