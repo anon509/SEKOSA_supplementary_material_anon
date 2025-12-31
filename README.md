@@ -16,7 +16,7 @@ SEKOSA enables autonomous robots to assess their own capabilities under varying 
 - Estimating expected performance of different behaviors
 - Selecting appropriate behaviors or recognizing inability to perform tasks
 
-This package provides everything needed to reproduce the demonstration from the paper.
+This package provides resources and instructions needed to reproduce the demonstration from the paper.
 
 ---
 
@@ -27,7 +27,7 @@ This package provides everything needed to reproduce the demonstration from the 
 ├── README.md                           # This file
 ├── SEKOSA_schema.tql             		# Ontology definition (TypeDB 3.0.x)
 ├── SEKOSA_data.tql      				# Ontology instantiation and data used for the demonstration
-├── sekosa_demonstration.py           	# Reproduces our demonstration
+├── SEKOSA_demonstration.py           	# Reproduces our demonstration
 ```
 
 ---
@@ -61,7 +61,7 @@ sudo apt install typedb=2.28.3
 
 ### 2. Python Requirements
 
-Using TypeDB requires certain Python versions.
+Using TypeDB 2.28.3 requires certain Python versions.
 We are using Python 3.11.14 with the packages listed below.
 
 **Packages to install:**
@@ -105,7 +105,7 @@ commit
 transaction sekosa data write
 
 # Source the SEKOSA data
-source SEKOSA_demo_data.tql
+source SEKOSA_data.tql
 
 # Commit the sourced data
 commit
@@ -116,6 +116,6 @@ commit
 
 In another terminal, run:
 ```bash
-python3.11 SEKOSA_demonstration.py
+python SEKOSA_demonstration.py
 ```
 
