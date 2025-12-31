@@ -1,0 +1,349 @@
+#############################################################################
+#                                                                           #
+#     	System Engineering Knowledge Ontology for Self-Assessment 			#
+#                           in TypeDB 2.28.3                                # 
+#		  Schema containing the SEKOSA ontology, i.e. attributes, 			#
+#		  		relations, entities, and inference rules.					#
+#############################################################################
+
+define
+
+
+###############
+## Attributes ##
+###############
+description sub attribute,
+	value string;
+name sub attribute,
+	value string;
+health_state sub attribute,
+	value boolean;
+
+property sub attribute,
+	abstract,
+	plays featuring:feature,
+	value double;
+	rate sub property,
+		abstract;
+		fps sub rate,
+			value double;
+	quality sub property,
+		abstract;
+		contrast sub quality,
+			value double;
+		p_human sub quality,
+			value double;
+		localization_error sub quality,
+			value double;
+	location sub property,
+		abstract;
+		ROS_topic sub location;
+	throughput sub property,
+		abstract;
+		power sub throughput,
+			value double;
+	capacity sub property,
+		abstract,
+		value double;
+	format sub property,
+		abstract;
+		ROS_message sub format;
+	quantity sub property,
+		abstract;
+		physical_quantity sub quantity,
+			abstract;
+			wavelength sub physical_quantity,
+				value double;
+			intensity sub physical_quantity,
+				value double;
+			voltage sub physical_quantity,
+				value double;
+			light_intensity sub physical_quantity,
+				value double;
+			noise_level sub physical_quantity,
+				value double;
+			size sub physical_quantity,
+				value double;
+			velocity sub physical_quantity,
+				value double;
+			distance sub physical_quantity,
+				value double;
+		resource_quantity sub quantity,
+			value double;
+	range sub property,
+		abstract;
+		minimum sub range,
+			value double;
+		maximum sub range,
+			value double;
+
+#################
+##  Relations  ##
+#################
+
+realizing sub relation, 			# Relating two creations of the same type, one providing certain properties, the other requesting them
+		relates provider,			# Creation that has certain properties
+		relates requester;			# Creation with featuring relation describing the required properties
+
+requirement sub relation,
+    relates call,
+    relates petitioner,				# Component
+    relates product;
+
+    functional_requirement sub requirement,
+        relates input as call, 		# data
+        relates output as product;  # data
+
+    non_functional_requirement sub requirement,
+        relates service as call, 	# resource
+        relates outcome as product; # data
+
+    environmental_requirement sub requirement, 
+        relates state as call, 		# physical quantity
+        relates outcome as product; # data
+
+processing_requirement sub relation,
+	relates need, 					# processing
+	relates petitioner, 			# behaviour
+	relates output; 				# creation
+
+processing sub relation,
+		relates input, 			  	# Creation
+		relates executor,			# Component
+		relates output,  			# Creation
+		plays processing_requirement:need;
+
+featuring sub relation,
+		relates subject, 			# Creation
+		relates feature, 			# Attribute or Property
+		plays requirement:call,
+		plays functional_requirement:input,
+		plays non_functional_requirement:service,
+		plays environmental_requirement:state;
+
+################
+##  Entities  ##
+################
+Component sub entity,
+	abstract,
+	owns health_state,
+	owns description,
+	plays requirement:petitioner,
+	plays processing:executor;
+	Sensor sub Component;
+		RGBCamera sub Sensor;
+		FastTracker sub Sensor;			# Difference between FastTracker and ThoroughTracker is only in the used input (RoomSize vs WayPointDistance)
+		ThoroughTracker sub Sensor;
+		SpeechRecognizer sub Sensor;	# Audio search components are both sensors (one processing ambient noise, the other room size)
+		NLP sub Sensor;
+	Actuator sub Component;
+	Functional sub Component;
+		Detector sub Functional;
+	Appliance sub Component;
+
+Creation sub entity,
+	abstract,
+	owns description,
+	plays realizing:provider,
+	plays realizing:requester,
+	plays processing:input,
+	plays featuring:subject;
+	Data sub Creation,
+		plays requirement:product,
+		plays functional_requirement:output,
+		plays non_functional_requirement:outcome,
+		plays environmental_requirement:outcome,
+		plays processing:output,
+		plays processing_requirement:output; 						# Not all creations can be output of processing(_requirement), only Data 
+		RgbImage sub Data,
+			owns contrast,
+			owns minimum,
+			owns maximum;
+		RobotPose sub Data,
+			owns localization_error,
+			owns minimum,
+			owns maximum;
+		VictimPose sub Data,
+			owns localization_error,
+			owns minimum,
+			owns maximum;
+		Detection sub Data,
+			owns p_human,
+			owns minimum,
+			owns maximum;
+		SpeechDetection sub Data,
+			owns p_human,
+			owns minimum,
+			owns maximum;
+		Signal sub Data,
+			owns wavelength,
+            owns intensity,
+            owns voltage,
+            owns fps;
+		Information sub Data,
+			owns ROS_topic,
+            owns ROS_message;
+		Knowledge sub Data,
+			owns ROS_topic,
+            owns ROS_message;
+	Resource sub Creation;
+		#plays non_functional_requirement:service;
+		ElectricPower sub Resource,
+            owns power,
+            owns voltage;
+        ComputingPower sub Resource,
+            owns power,
+            owns voltage;
+	PhysicalPhenomena sub Creation,
+		abstract;
+		#plays environmental_requirement:state;
+		Light sub PhysicalPhenomena,
+			owns light_intensity,				  	# in Lumens
+			owns minimum,
+			owns maximum;
+		Noise sub PhysicalPhenomena,
+			owns noise_level,						# in Decibels
+			owns minimum,
+			owns maximum;
+		RoomSize sub PhysicalPhenomena,
+			owns size,								# room diagonal in Meters
+			owns minimum,
+			owns maximum;
+		WayPointDistance sub PhysicalPhenomena,
+			owns distance,							# distance between waypoints in Meters	
+			owns minimum,
+			owns maximum;
+
+Behavior sub entity,
+		abstract,
+		owns description,
+		owns name,
+		owns health_state,
+		plays processing_requirement:petitioner;
+		AudioSearch sub Behavior;
+		VisualFastSearch sub Behavior;
+		VisualThoroughSearch sub Behavior;
+
+minimal_detection_probability sub entity,
+    owns p_human;
+
+maximal_localization_error sub entity,
+    owns localization_error;
+
+#########################
+##  Relation Rules     ##
+#########################
+
+rule realizing_rule_quality:
+    when {
+        $provider isa Creation, has quality $att, has description $d1;
+        $requester isa Creation, has description $d2;
+        $d1 = $d2;
+        $requester_min_attr isa minimum;
+        $requester_max_attr isa maximum;
+        (subject: $requester, feature: $requester_min_attr) isa featuring;
+        (subject: $requester, feature: $requester_max_attr) isa featuring;
+        $att < $requester_max_attr;
+        $att >= $requester_min_attr;
+    } then {
+        (provider: $provider, requester: $requester) isa realizing;
+    };
+
+rule realizing_rule_physical_quantity:
+    when {
+        $provider isa Creation, has physical_quantity $att, has description $d1;
+        $requester isa Creation, has description $d2;
+        $d1 = $d2;
+        $requester_min_attr isa minimum;
+        $requester_max_attr isa maximum;
+        (subject: $requester, feature: $requester_min_attr) isa featuring;
+        (subject: $requester, feature: $requester_max_attr) isa featuring;
+        $att < $requester_max_attr;
+        $att >= $requester_min_attr;
+    } then {
+        (provider: $provider, requester: $requester) isa realizing;
+    };
+
+rule processing_rule:
+    when {
+        $input_creation isa Creation;
+        $data_req isa Creation;
+        $feature_req (subject: $data_req) isa featuring;
+        $data_out isa Creation;
+        $comp isa Component;
+        $rq (call: $feature_req, petitioner: $comp, product: $data_out) isa requirement;
+        $real (provider: $input_creation, requester: $data_req) isa realizing;
+    } then {
+        (input: $input_creation, executor: $comp, output:$data_out) isa processing;
+    };
+
+rule processing_is_transitive2:
+    when {
+        (input: $input, executor: $comp1, output:$intermediate) isa processing;
+        (input: $intermediate, executor: $comp2, output:$end_output) isa processing;
+    } then {
+        (input: $input, executor: $comp1, executor: $comp2, output:$end_output) isa processing;
+    };
+
+#########################
+##  Behavior Rules     ##
+#########################
+
+rule visual_fast_search_requirement:
+    when {
+        $beh isa VisualFastSearch;
+		$light isa Light;
+        $proc1 (input: $light, executor: $cam, executor: $detector, output: $detection) isa processing;
+        $cam isa RGBCamera;
+        $detector isa Detector;
+        $detection isa Detection, has p_human $p;
+        $min_p_entity isa minimal_detection_probability, has p_human $min_p_value;
+        $p >= $min_p_value;
+		$room_size isa RoomSize;
+		$proc2 (input: $room_size, executor: $tracker, output: $vicpose) isa processing;
+		$tracker isa FastTracker;
+		$vicpose isa VictimPose, has localization_error $le;
+		$max_le_entity isa maximal_localization_error, has localization_error $max_le_value;
+        $le <= $max_le_value;
+    } then {
+        (need: $proc1, need: $proc2, petitioner: $beh, output: $detection, output: $vicpose) isa processing_requirement;
+    };
+
+rule visual_thorough_search_requirement:
+    when {
+        $beh isa VisualThoroughSearch;
+        $light isa Light;
+        $proc1 (input: $light, executor: $cam, executor: $detector, output: $detection) isa processing;
+        $cam isa RGBCamera;
+        $detector isa Detector;
+        $detection isa Detection, has p_human $p;
+        $min_p_entity isa minimal_detection_probability, has p_human $min_p_value;
+        $p >= $min_p_value;
+        $waypoint_dist isa WayPointDistance;
+        $proc2 (input: $waypoint_dist, executor: $tracker, output: $vicpose) isa processing;
+        $tracker isa ThoroughTracker;
+        $vicpose isa VictimPose, has localization_error $le;
+        $max_le_entity isa maximal_localization_error, has localization_error $max_le_value;
+        $le <= $max_le_value;
+    } then {
+        (need: $proc1, need: $proc2, petitioner: $beh, output: $detection, output: $vicpose) isa processing_requirement;
+    };
+
+rule audio_search_requirement:
+    when {
+        $beh isa AudioSearch;
+        $noise isa Noise;
+        $proc1 (input: $noise, executor: $speech_rec, output: $speech_detection) isa processing;
+        $speech_rec isa SpeechRecognizer;
+        $speech_detection isa SpeechDetection, has p_human $p;
+        $min_p_entity isa minimal_detection_probability, has p_human $min_p_value;
+        $p >= $min_p_value;
+		$room_size isa RoomSize;
+        $proc2 (input: $room_size, executor: $nlp, output: $vicpose) isa processing;
+        $nlp isa NLP;
+        $vicpose isa VictimPose, has localization_error $le;
+        $max_le_entity isa maximal_localization_error, has localization_error $max_le_value;
+        $le <= $max_le_value;
+    } then {
+        (need: $proc1, need: $proc2, petitioner: $beh, output: $speech_detection, output: $vicpose) isa processing_requirement;
+    };

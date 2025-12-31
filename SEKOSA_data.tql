@@ -1,0 +1,354 @@
+#############################################################################
+#                                                                           #
+#     	System Engineering Knowledge Ontology for Self-Assessment 			#
+#                           in TypeDB 2.28.3                                # 
+#		  Data instantiating performance thresholds, defaults conditions, 	#
+#			constants, and components with their requirements 				#
+# 						as used in the demonstration.						#
+#############################################################################
+
+insert
+
+#########################
+##  Threshold Values   ##
+#########################
+
+$min_p_human isa minimal_detection_probability,
+	has p_human 0.5;
+
+$max_localization_error isa maximal_localization_error,
+	has localization_error 5.0;		
+
+#########################
+##  Default Conditions ##
+#########################
+
+$current_light isa Light,
+	has description "Light",
+	has light_intensity 70;
+
+$current_noise isa Noise,
+	has description "Noise",
+	has noise_level 85;
+
+$current_room_size isa RoomSize,
+	has description "RoomSize",
+	has size 25;
+
+##########################
+##       Constants		##
+##########################
+
+$wd isa WayPointDistance,
+	has description "WayPointDistance",
+	has distance 3.0;
+
+##########################
+##       Components		##
+##########################
+
+################
+## RGB Camera ##
+################
+
+$rgb_camera isa RGBCamera,
+    has health_state true;
+
+# 1st performance case: 500-5000 Lumens → contrast 0.85
+$light_min_0 500 isa minimum;
+$light_max_0 5000 isa maximum;
+$light_0 isa Light,
+    has description "Light";
+$rgb_image_0 isa RgbImage,
+    has description "RgbImage",
+    has contrast 0.85;
+$feature_rgb_cam_0 (subject: $light_0, feature: $light_min_0, feature: $light_max_0) isa featuring;
+$rq_rgb_cam_0 (state: $feature_rgb_cam_0, petitioner: $rgb_camera, outcome: $rgb_image_0) isa environmental_requirement;
+
+# 2nd performance case: 100-500 Lumens → contrast 0.7
+$light_min_1 100 isa minimum;
+$light_max_1 500 isa maximum;
+$light_1 isa Light,
+    has description "Light";
+$rgb_image_1 isa RgbImage,
+    has description "RgbImage",
+    has contrast 0.7;
+$feature_rgb_cam_1 (subject: $light_1, feature: $light_min_1, feature: $light_max_1) isa featuring;
+$rq_rgb_cam_1 (state: $feature_rgb_cam_1, petitioner: $rgb_camera, outcome: $rgb_image_1) isa environmental_requirement;
+
+# 3rd performance case: 50-100 Lumens → contrast 0.5
+$light_min_2 50 isa minimum;
+$light_max_2 100 isa maximum;
+$light_2 isa Light,
+    has description "Light";
+$rgb_image_2 isa RgbImage,
+    has description "RgbImage",
+    has contrast 0.5;
+$feature_rgb_cam_2 (subject: $light_2, feature: $light_min_2, feature: $light_max_2) isa featuring;
+$rq_rgb_cam_2 (state: $feature_rgb_cam_2, petitioner: $rgb_camera, outcome: $rgb_image_2) isa environmental_requirement;
+
+# 4th performance case: 0-50 Lumens → contrast 0.25
+$light_min_3 0 isa minimum;
+$light_max_3 50 isa maximum;
+$light_3 isa Light,
+    has description "Light";
+$rgb_image_3 isa RgbImage,
+    has description "RgbImage",
+    has contrast 0.25;
+$feature_rgb_cam_3 (subject: $light_3, feature: $light_min_3, feature: $light_max_3) isa featuring;
+$rq_rgb_cam_3 (state: $feature_rgb_cam_3, petitioner: $rgb_camera, outcome: $rgb_image_3) isa environmental_requirement;
+
+#################
+##   Detector  ##
+#################
+
+$detector isa Detector,
+	has health_state true;
+
+# 1st performance case: contrast above 0.8 → p_human 0.8
+$min_contrast_0 0.80 isa minimum;
+$max_contrast_0 1.0 isa maximum;
+$input_image_0 isa RgbImage,
+	has description "RgbImage";
+$detection_0 isa Detection,
+	has description "Detection",
+	has p_human 0.8;
+$feature_detector_0 (subject: $input_image_0, feature: $min_contrast_0, feature: $max_contrast_0) isa featuring;
+$rq_detector_0 (input: $feature_detector_0, petitioner: $detector, output: $detection_0) isa functional_requirement;
+
+# 2nd performance case: contrast 0.6-0.8 → p_human 0.7
+$min_contrast_1 0.60 isa minimum;
+$max_contrast_1 0.8 isa maximum;
+$input_image_1 isa RgbImage,
+	has description "RgbImage";
+$detection_1 isa Detection,
+	has description "Detection",
+	has p_human 0.7;
+$feature_detector_1 (subject: $input_image_1, feature: $min_contrast_1, feature: $max_contrast_1) isa featuring;
+$rq_detector_1 (input: $feature_detector_1, petitioner: $detector, output: $detection_1) isa functional_requirement;
+
+# 3rd performance case: contrast 0.4-0.6 → p_human 0.5
+$min_contrast_2 0.4 isa minimum;
+$max_contrast_2 0.6 isa maximum;
+$input_image_2 isa RgbImage,
+	has description "RgbImage";
+$detection_2 isa Detection,
+	has description "Detection",
+	has p_human 0.5;
+$feature_detector_2 (subject: $input_image_2, feature: $min_contrast_2, feature: $max_contrast_2) isa featuring;
+$rq_detector_2 (input: $feature_detector_2, petitioner: $detector, output: $detection_2) isa functional_requirement;
+
+# 4th performance case: contrast 0.1-0.4 → p_human 0.25
+$min_contrast_3 0.1 isa minimum;
+$max_contrast_3 0.4 isa maximum;
+$input_image_3 isa RgbImage,
+	has description "RgbImage";
+$detection_3 isa Detection,
+	has description "Detection",
+	has p_human 0.25;
+$feature_detector_3 (subject: $input_image_3, feature: $min_contrast_3, feature: $max_contrast_3) isa featuring;
+$rq_detector_3 (input: $feature_detector_3, petitioner: $detector, output: $detection_3) isa functional_requirement;
+
+##################
+## Fast Tracker ##
+##################
+
+$fast_tracker isa FastTracker,
+	has health_state true;
+
+# 1st performance case: room diagonal above 6m → localization error of 5m
+$min_size_0 6.0 isa minimum;
+$max_size_0 50.0 isa maximum;
+$room_size_0 isa RoomSize,
+	has description "RoomSize";
+$vicpose_ft_0 isa VictimPose,
+	has description "VictimPose",
+	has localization_error 5.0;
+$feature_fast_tracker_0 (subject: $room_size_0, feature: $min_size_0, feature: $max_size_0) isa featuring;
+$rq_fast_tracker_0 (state: $feature_fast_tracker_0, petitioner: $fast_tracker, outcome: $vicpose_ft_0) isa environmental_requirement;
+
+# 2nd performance case: room diagonal 4-6m → localization error of 5m
+$min_size_1 4.0 isa minimum;
+$max_size_1 6.0 isa maximum;
+$room_size_1 isa RoomSize,
+	has description "RoomSize";
+$vicpose_ft_1 isa VictimPose,
+	has description "VictimPose",
+	has localization_error 4.0;
+$feature_fast_tracker_1 (subject: $room_size_1, feature: $min_size_1, feature: $max_size_1) isa featuring;
+$rq_fast_tracker_1 (state: $feature_fast_tracker_1, petitioner: $fast_tracker, outcome: $vicpose_ft_1) isa environmental_requirement;
+
+# 3rd performance case: room diagonal 2-4m → localization error of 3m
+$min_size_2 2.0 isa minimum;
+$max_size_2 4.0 isa maximum;
+$room_size_2 isa RoomSize,
+	has description "RoomSize";
+$vicpose_ft_2 isa VictimPose,
+	has description "VictimPose",
+	has localization_error 3.0;
+$feature_fast_tracker_2 (subject: $room_size_2, feature: $min_size_2, feature: $max_size_2) isa featuring;
+$rq_fast_tracker_2 (state: $feature_fast_tracker_2, petitioner: $fast_tracker, outcome: $vicpose_ft_2) isa environmental_requirement;
+
+# 4th performance case: room diagonal 0-2m → localization error of 2m
+$min_size_3 0.0 isa minimum;
+$max_size_3 2.0 isa maximum;
+$room_size_3 isa RoomSize,
+	has description "RoomSize";
+$vicpose_ft_3 isa VictimPose,
+	has description "VictimPose",
+	has localization_error 2.0;
+$feature_fast_tracker_3 (subject: $room_size_3, feature: $min_size_3, feature: $max_size_3) isa featuring;
+$rq_fast_tracker_3 (state: $feature_fast_tracker_3, petitioner: $fast_tracker, outcome: $vicpose_ft_3) isa environmental_requirement;
+######################
+## Thorough Tracker ##
+######################
+
+$thorough_tracker isa ThoroughTracker,
+	has health_state true;
+
+# 1st performance case: waypoint distance above 6m → localization error of 6.25m
+$min_wd_0 6.0 isa minimum;
+$max_wd_0 50.0 isa maximum;
+$waypoint_distance_0 isa WayPointDistance,
+	has description "WayPointDistance";
+$vicpose_tt_0 isa VictimPose,
+	has description "VictimPose",
+	has localization_error 6.25;
+$feature_thorough_tracker_0 (subject: $waypoint_distance_0, feature: $min_wd_0, feature: $max_wd_0) isa featuring;
+$rq_thorough_tracker_0 (state: $feature_thorough_tracker_0, petitioner: $thorough_tracker, outcome: $vicpose_tt_0) isa environmental_requirement;
+
+# 2nd performance case: waypoint distance 4-6m → localization error of 5.25m
+$min_wd_1 4.0 isa minimum;
+$max_wd_1 6.0 isa maximum;
+$waypoint_distance_1 isa WayPointDistance,
+	has description "WayPointDistance";
+$vicpose_tt_1 isa VictimPose,
+	has description "VictimPose",
+	has localization_error 5.25;
+$feature_thorough_tracker_1 (subject: $waypoint_distance_1, feature: $min_wd_1, feature: $max_wd_1) isa featuring;
+$rq_thorough_tracker_1 (state: $feature_thorough_tracker_1, petitioner: $thorough_tracker, outcome: $vicpose_tt_1) isa environmental_requirement;
+
+# 3rd performance case: waypoint distance 2-4m → localization error of 3.25m
+$min_wd_2 2.0 isa minimum;
+$max_wd_2 4.0 isa maximum;
+$waypoint_distance_2 isa WayPointDistance,
+	has description "WayPointDistance";
+$vicpose_tt_2 isa VictimPose,
+	has description "VictimPose",
+	has localization_error 3.25;
+$feature_thorough_tracker_2 (subject: $waypoint_distance_2, feature: $min_wd_2, feature: $max_wd_2) isa featuring;
+$rq_thorough_tracker_2 (state: $feature_thorough_tracker_2, petitioner: $thorough_tracker, outcome: $vicpose_tt_2) isa environmental_requirement;
+
+# 4th performance case: waypoint distance 0-2m → localization error of 2.25m
+$min_wd_3 0.0 isa minimum;
+$max_wd_3 2.0 isa maximum;
+$waypoint_distance_3 isa WayPointDistance,
+	has description "WayPointDistance";
+$vicpose_tt_3 isa VictimPose,
+	has description "VictimPose",
+	has localization_error 2.25;
+$feature_thorough_tracker_3 (subject: $waypoint_distance_3, feature: $min_wd_3, feature: $max_wd_3) isa featuring;
+$rq_thorough_tracker_3 (state: $feature_thorough_tracker_3, petitioner: $thorough_tracker, outcome: $vicpose_tt_3) isa environmental_requirement;
+
+#####################
+# Speech Recognizer #
+#####################
+
+$speech_rec isa SpeechRecognizer,
+	has health_state true;
+
+# 1st performance case: noise level below 80dB → recognition accuracy 0.75
+$min_noise_0 0 isa minimum;
+$max_noise_0 80 isa maximum;
+$noise_0 isa Noise,
+	has description "Noise";
+$speech_detection_0 isa SpeechDetection,
+	has description "SpeechDetection",
+	has p_human 0.75;
+$feature_speech_rec_0 (subject: $noise_0, feature: $min_noise_0, feature: $max_noise_0) isa featuring;
+$rq_speech_rec_0 (state: $feature_speech_rec_0, petitioner: $speech_rec, outcome: $speech_detection_0) isa environmental_requirement;
+
+# 2nd performance case: noise level 80-90dB → recognition accuracy 0.65
+$min_noise_1 80 isa minimum;
+$max_noise_1 90 isa maximum;
+$noise_1 isa Noise,
+	has description "Noise";
+$speech_detection_1 isa SpeechDetection,
+	has description "SpeechDetection",
+	has p_human 0.65;
+$feature_speech_rec_1 (subject: $noise_1, feature: $min_noise_1, feature: $max_noise_1) isa featuring;
+$rq_speech_rec_1 (state: $feature_speech_rec_1, petitioner: $speech_rec, outcome: $speech_detection_1) isa environmental_requirement;
+
+# 3rd performance case: noise above 90dB → recognition accuracy 0.3
+$min_noise_2 90 isa minimum;
+$max_noise_2 150 isa maximum;
+$noise_2 isa Noise,
+	has description "Noise";
+$speech_detection_2 isa SpeechDetection,
+	has description "SpeechDetection",
+	has p_human 0.3;
+$feature_speech_rec_2 (subject: $noise_2, feature: $min_noise_2, feature: $max_noise_2) isa featuring;
+$rq_speech_rec_2 (state: $feature_speech_rec_2, petitioner: $speech_rec, outcome: $speech_detection_2) isa environmental_requirement;
+
+#############
+##   NLP   ##
+#############
+
+$nlp isa NLP,
+	has health_state true;
+
+# 1st performance case: room diagonal above 6m → localization error of 6m
+$min_size_nlp_0 6.0 isa minimum;
+$max_size_nlp_0 50.0 isa maximum;
+$room_size_nlp_0 isa RoomSize,
+	has description "RoomSize";
+$vicpose_nlp_0 isa VictimPose,
+	has description "VictimPose",
+	has localization_error 6.0;
+$feature_nlp_0 (subject: $room_size_nlp_0, feature: $min_size_nlp_0, feature: $max_size_nlp_0) isa featuring;
+$rq_nlp_0 (state: $feature_nlp_0, petitioner: $nlp, outcome: $vicpose_nlp_0) isa environmental_requirement;
+
+# 2nd performance case: room diagonal 4-6m → localization error of 5m
+$min_size_nlp_1 4.0 isa minimum;
+$max_size_nlp_1 6.0 isa maximum;
+$room_size_nlp_1 isa RoomSize,
+	has description "RoomSize";
+$vicpose_nlp_1 isa VictimPose,
+	has description "VictimPose",
+	has localization_error 5.0;
+$feature_nlp_1 (subject: $room_size_nlp_1, feature: $min_size_nlp_1, feature: $max_size_nlp_1) isa featuring;
+$rq_nlp_1 (state: $feature_nlp_1, petitioner: $nlp, outcome: $vicpose_nlp_1) isa environmental_requirement;
+
+# 3rd performance case: room diagonal 2-4m → localization error of 3m
+$min_size_nlp_2 2.0 isa minimum;
+$max_size_nlp_2 4.0 isa maximum;
+$room_size_nlp_2 isa RoomSize,
+	has description "RoomSize";
+$vicpose_nlp_2 isa VictimPose,
+	has description "VictimPose",
+	has localization_error 3.0;
+$feature_nlp_2 (subject: $room_size_nlp_2, feature: $min_size_nlp_2, feature: $max_size_nlp_2) isa featuring;
+$rq_nlp_2 (state: $feature_nlp_2, petitioner: $nlp, outcome: $vicpose_nlp_2) isa environmental_requirement;
+
+# 4th performance case: room diagonal 0-2m → localization error of 2m
+$min_size_nlp_3 0.0 isa minimum;
+$max_size_nlp_3 2.0 isa maximum;
+$room_size_nlp_3 isa RoomSize,
+	has description "RoomSize";
+$vicpose_nlp_3 isa VictimPose,
+	has description "VictimPose",
+	has localization_error 2.0;
+$feature_nlp_3 (subject: $room_size_nlp_3, feature: $min_size_nlp_3, feature: $max_size_nlp_3) isa featuring;
+$rq_nlp_3 (state: $feature_nlp_3, petitioner: $nlp, outcome: $vicpose_nlp_3) isa environmental_requirement;
+
+###################
+##   Behaviors   ##
+###################
+$vis_fs isa VisualFastSearch,
+	has name "Visual Fast Search";
+
+$vis_ts isa VisualThoroughSearch,
+	has name "Visual Thorough Search";
+
+$aco_s isa AudioSearch,
+	has name "Acoustic Search";
