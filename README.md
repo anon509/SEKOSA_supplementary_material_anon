@@ -112,7 +112,6 @@ commit
 ```
 
 ### Step 3: Run the Demonstration
-**Option B: Standalone Python Script**
 
 In another terminal, run:
 ```bash
